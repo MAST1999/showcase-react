@@ -44,7 +44,7 @@ const EditModal = ({ header, id, text, setInfos, infos }: Props) => {
       <Modal isOpen={isOpen} onClose={onClose}>
         <ModalOverlay />
         <ModalContent>
-          <ModalHeader>Select the file you want to upload</ModalHeader>
+          <ModalHeader>Edit the Text</ModalHeader>
           <ModalCloseButton />
           <ModalBody>
             <Text>{header}</Text>
