@@ -1,5 +1,6 @@
 import {
   Button,
+  Divider,
   GridItem,
   Heading,
   HStack,
@@ -25,6 +26,7 @@ const Head = () => {
           Toggle {colorMode === "light" ? "Light" : "Dark"}
         </Button>
       </HStack>
+      <Divider borderColor="cyan" />
     </GridItem>
   );
 };
