@@ -1,0 +1,18 @@
+{
+  "type": "postgres",
+  "host": "localhost",
+  "port": 5432,
+  "username": "mast",
+  "password": "1234",
+  "database": "checkout",
+  "synchronize": false,
+  "logging": true,
+  "entities": ["public/entity/**/*.js"],
+  "migrations": ["public/migrations/**/*.js"],
+  "subscribers": ["public/subscriber/**/*.js"],
+  "cli": {
+    "entitiesDir": "src/entity",
+    "migrationsDir": "src/migration",
+    "subscribersDir": "src/subscriber"
+  }
+}
