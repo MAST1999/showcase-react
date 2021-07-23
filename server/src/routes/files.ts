@@ -16,14 +16,14 @@ const storage = multer.diskStorage({
     );
   },
 });
-const upload = multer({ dest: "uploads", storage });
+const upload = multer({ storage });
 
 export const router = Router();
 
 // GET
 router.get("/files", async (req, res) => {
   try {
-    const files = await File.find({ relations: ["user"] });
+    const files = await File.find({ relations: ["user", "info"] });
 
     return res.send(files);
   } catch (err) {
@@ -81,37 +81,40 @@ router.post("/file", upload.single("file"), async (req, res) => {
   }
 });
 
-router.post("/files", upload.array("files", 10), async (req, res) => {
-  const { userUuid } = req.body;
-  if (req.files && Array.isArray(req.files)) {
-    try {
-      for (const file of req.files) {
-        const user = await User.findOneOrFail({ uuid: userUuid });
+router.post("/files", upload.array("files"), async (req, res) => {
+  const { userUuid, infoUuid } = req.body;
 
-        const newFile = new File({
-          filename: file.filename,
-          link: `http://localhost:5000/uploads/${file.filename}`,
-          user,
-        });
-
-        await newFile.save();
-      }
-      return res
-        .status(201)
-        .send({ message: "files were uploaded successfully" });
-    } catch (err) {
-      const errObj = {
-        err,
-        place: `/files`,
-        method: "POST",
-      };
-      console.log(errObj);
-      return res.send(500).json(errObj);
-    }
-  } else {
+  if (!req.files || !Array.isArray(req.files)) {
     return res
       .status(400)
-      .send({ message: "Wrong Input", place: "/files", method: "POST" });
+      .send({ message: "no files were sent", files: req.files });
+  }
+
+  try {
+    for await (const file of req.files) {
+      const user = await User.findOneOrFail({ uuid: userUuid });
+      const info = await Info.findOneOrFail({ uuid: infoUuid });
+
+      const newFile = new File({
+        filename: file.filename,
+        link: `http://localhost:5000/uploads/${file.filename}`,
+        user,
+        info,
+      });
+
+      await newFile.save();
+    }
+    return res
+      .status(201)
+      .send({ message: "files were uploaded successfully" });
+  } catch (err) {
+    const errObj = {
+      err,
+      place: `/files`,
+      method: "POST",
+    };
+    console.log(errObj);
+    return res.send(500).json(errObj);
   }
 });
 

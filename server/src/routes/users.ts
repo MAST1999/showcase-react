@@ -48,7 +48,7 @@ router.get("/user/:uuid", async (req, res) => {
   const uuid = req.params.uuid;
 
   try {
-    const user = await User.findOneOrFail({ uuid });
+    const user = await User.findOneOrFail({ uuid }, { relations: ["infos"] });
 
     return res.send(user);
   } catch (err) {

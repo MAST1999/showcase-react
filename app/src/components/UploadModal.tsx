@@ -14,11 +14,13 @@ import {
   Text,
   useDisclosure,
 } from "@chakra-ui/react";
+import axios from "axios";
 import { useForm } from "react-hook-form";
 import FileUpload from "./FileUpload";
 
 interface Props {
-  id: number;
+  infoUuid: string;
+  userUuid: string;
   header: string;
 }
 
@@ -26,13 +28,26 @@ type FormValues = {
   file_: FileList;
 };
 
-const UploadModal = ({ header, id }: Props) => {
+const UploadModal = ({ header, infoUuid, userUuid }: Props) => {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const { register, handleSubmit } = useForm<FormValues>();
 
-  const onSubmit = handleSubmit((data) =>
-    console.log("on submit needs to send request to server", data)
-  );
+  const onSubmit = handleSubmit(async (data: { file_: File[] }) => {
+    const files = data.file_;
+    if (files.length > 1) {
+      try {
+        const res = await axios.post("http://localhost:5000/uploadAPI/files", {
+          files,
+          userUuid,
+          infoUuid,
+        });
+
+        console.log(res);
+      } catch (err) {
+        throw err;
+      }
+    }
+  });
 
   const validateFiles = (value: FileList) => {
     if (value.length < 1) return "Files is required";
@@ -61,6 +76,7 @@ const UploadModal = ({ header, id }: Props) => {
                 <FormLabel>Select File To Upload</FormLabel>
                 <FileUpload
                   register={register("file_", { validate: validateFiles })}
+                  multiple={true}
                 >
                   <Button colorScheme="blue">Upload</Button>
                 </FileUpload>

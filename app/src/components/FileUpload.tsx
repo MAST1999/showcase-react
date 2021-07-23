@@ -33,7 +33,7 @@ const FileUpload = (props: FileUploadProps) => {
           inputRef.current = e;
         }}
         onChange={(event) => {
-          const filename = event.target.value.slice(12);
+          const filename = event.target.value.slice(12) + "...";
           setFileName(filename);
         }}
       />

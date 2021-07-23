@@ -1,26 +1,58 @@
-import { Center, Divider, Grid, GridItem } from "@chakra-ui/react";
+import {
+  Box,
+  Center,
+  Divider,
+  Grid,
+  GridItem,
+  Spinner,
+} from "@chakra-ui/react";
+import axios from "axios";
 import React, { useState } from "react";
+import useSWR from "swr";
 import Head from "./components/Head";
 import Main from "./components/Main";
+import { Info, User } from "./interfaces";
 
-const initialState = [
-  { id: 1, text: "hello", title: "my title" },
-  { id: 2, text: "bye", title: "second title" },
-];
+export enum Place {
+  Iran = "iran",
+  US = "us",
+  UK = "uk",
+  Canada = "canada",
+  Japan = "japan",
+  Unknown = "unknown",
+}
 
-function App() {
-  const [infos, setInfos] = useState(initialState);
+const App = () => {
+  const [user, setUser] = useState<User>({
+    username: "mast",
+    uuid: "eecf73ad-71ec-46d5-93f7-2ff01feff5d2",
+    email: "mast@gmail.com",
+  });
+
+  const fetcher = (url: string) => axios.get(url).then((res) => res.data);
+
+  const { data, error } = useSWR<{ infos: Info[] }>(
+    `http://localhost:5000/infosAPI/userInfos/${user.uuid}`,
+    fetcher
+  );
 
   return (
     <Grid
       templateColumns="repeat(4, 1fr)"
       templateRows="70px repeat(2, 1fr) 50px"
-      h="100vh"
+      minH="99.9vh"
+      h="100%"
       gap={2}
     >
-      <Head />
+      <Head user={user} setUser={setUser} />
 
-      <Main infos={infos} setInfos={setInfos} />
+      {error ? (
+        <Box>Something went wrong</Box>
+      ) : data ? (
+        <Main infos={data.infos} userUuid={user.uuid} />
+      ) : (
+        <Spinner />
+      )}
 
       <GridItem rowSpan={1} colSpan={4}>
         <Divider borderColor="cyan" />
@@ -30,6 +62,6 @@ function App() {
       </GridItem>
     </Grid>
   );
-}
+};
 
 export default App;

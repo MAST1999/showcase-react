@@ -28,3 +28,46 @@ router.post("/info/:uuid", async (req, res) => {
     return res.send(500).json(errObj);
   }
 });
+
+// GET
+router.get("/userInfos/:uuid", async (req, res) => {
+  const userUuid = req.params.uuid;
+
+  try {
+    const user = await User.findOneOrFail(
+      { uuid: userUuid },
+      { relations: ["infos", "files"] }
+    );
+
+    return res.send({ uuid: userUuid, infos: user.infos, files: user.files });
+  } catch (err) {
+    const errObj = {
+      err,
+      place: `/usersInfos/${userUuid}`,
+      method: "GET",
+    };
+    console.log(errObj);
+    return res.send(500).json(errObj);
+  }
+});
+
+router.get("/filesInfos/:uuid", async (req, res) => {
+  const infoUuid = req.params.uuid;
+
+  try {
+    const info = await Info.findOneOrFail(
+      { uuid: infoUuid },
+      { relations: ["files"] }
+    );
+
+    return res.send(info.files);
+  } catch (err) {
+    const errObj = {
+      err,
+      place: `/filesInfos/${infoUuid}`,
+      method: "GET",
+    };
+    console.log(errObj);
+    return res.send(500).json(errObj);
+  }
+});

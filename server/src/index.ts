@@ -1,3 +1,4 @@
+import cors from "cors";
 import express from "express";
 import morgan from "morgan";
 import "reflect-metadata";
@@ -9,6 +10,7 @@ import { router as routerUser } from "./routes/users.js";
 const port = process.env["PORT"] || 5000;
 
 const app = express();
+app.use(cors());
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 app.use(morgan("dev"));

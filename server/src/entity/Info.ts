@@ -20,7 +20,7 @@ export class Info extends Model {
   @IsString()
   title: string;
 
-  @Column({ unique: true, type: "enum", enum: Place, default: Place.Unknown })
+  @Column({ type: "enum", enum: Place, default: Place.Unknown })
   @IsString()
   list: Place;
 

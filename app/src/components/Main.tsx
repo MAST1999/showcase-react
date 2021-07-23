@@ -1,62 +1,41 @@
-import {
-  Box,
-  Flex,
-  GridItem,
-  ListItem,
-  OrderedList,
-  Text,
-  useColorModeValue,
-} from "@chakra-ui/react";
-import EditModal from "./EditModal";
+import { Box, Flex, GridItem, Text, useColorModeValue } from "@chakra-ui/react";
+import { Info } from "../interfaces";
+import FilesControl from "./FilesControl";
 import UploadModal from "./UploadModal";
 
 interface Props {
-  infos: Array<{
-    id: number;
-    text: string;
-    title: string;
-  }>;
-  setInfos: React.Dispatch<
-    React.SetStateAction<
-      {
-        id: number;
-        text: string;
-        title: string;
-      }[]
-    >
-  >;
+  infos: Info[];
+  userUuid: string;
 }
 
-const Main = ({ infos, setInfos }: Props) => {
+const Main = ({ infos, userUuid }: Props) => {
   const listItemBorderColor = useColorModeValue("teal.200", "teal.600");
 
   return (
     <GridItem rowSpan={2} colSpan={4}>
       <Flex flexDirection="column" alignItems="center">
-        <OrderedList spacing={3}>
+        <Box spacing={3}>
           {infos.map((info) => (
-            <ListItem
-              key={info.id}
-              border="2px solid"
-              borderRadius={10}
-              borderColor={listItemBorderColor}
-              width="fit-content"
-              p={2}
-            >
-              <Box display="flex" flexDirection="row" alignItems="center">
-                <Text mr={2}>{info.text}</Text>
-                <UploadModal header={info.title} id={info.id} />
-                <EditModal
-                  text={info.text}
-                  header={info.title}
-                  id={info.id}
-                  setInfos={setInfos}
-                  infos={infos}
-                />
-              </Box>
-            </ListItem>
+            <Flex key={info.uuid} flexDirection="column">
+              <Text
+                fontSize={32}
+                borderBottom="2px solid"
+                borderColor="whiteAlpha.300"
+                p={2}
+              >
+                {info.title}
+              </Text>
+              <FilesControl key={info.uuid} infoUuid={info.uuid} />
+              <UploadModal
+                header={info.title}
+                infoUuid={info.uuid}
+                userUuid={userUuid}
+                key={info.uuid}
+              />
+              <Text>{info.list}</Text>
+            </Flex>
           ))}
-        </OrderedList>
+        </Box>
       </Flex>
     </GridItem>
   );
