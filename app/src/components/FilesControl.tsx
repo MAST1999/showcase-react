@@ -15,7 +15,7 @@ import {
 } from "@chakra-ui/react";
 import axios from "axios";
 import { useRef } from "react";
-import useSWR from "swr";
+import useSWR, { mutate } from "swr";
 import { FileData } from "../interfaces";
 
 interface Props {
@@ -33,8 +33,7 @@ const FilesControl = ({ infoUuid }: Props) => {
     axios.get(url).then((res) => res.data);
   const { data, error } = useSWR<FileData[]>(
     `http://localhost:5000/infosAPI/filesInfos/${infoUuid}`,
-    fetcher,
-    { refreshInterval: 1000 }
+    fetcher
   );
 
   const EditableControls = ({ fileUuid, inpRef }: PropsEditable) => {
@@ -59,6 +58,7 @@ const FilesControl = ({ infoUuid }: Props) => {
               `http://localhost:5000/uploadAPI/file/${fileUuid}`,
               { description: inpRef.current?.value }
             );
+            mutate(`http://localhost:5000/infosAPI/filesInfos/${infoUuid}`);
 
             submitProps["onClick"]
               ? submitProps["onClick"](e)
@@ -110,8 +110,19 @@ const FilesControl = ({ infoUuid }: Props) => {
             borderBottom="2px solid"
             borderColor="whiteAlpha.300"
             mb={2}
+            w="450px"
           >
-            <Text fontSize={24}>File Name: {file.filename}</Text>
+            <Text
+              fontSize={24}
+              textOverflow="ellipsis"
+              whiteSpace="nowrap"
+              overflow="hidden"
+            >
+              File Name:{" "}
+              <Box as="span" fontSize={18}>
+                {file.filename}
+              </Box>
+            </Text>
             {file.description ? (
               <Editable
                 defaultValue={file.description}

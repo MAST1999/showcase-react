@@ -16,6 +16,7 @@ import {
 } from "@chakra-ui/react";
 import axios from "axios";
 import { useForm } from "react-hook-form";
+import { mutate } from "swr";
 import FileUpload from "./FileUpload";
 
 interface Props {
@@ -46,6 +47,7 @@ const UploadModal = ({ header, infoUuid, userUuid }: Props) => {
       data: formData,
       headers: { "Content-Type": "multipart/form-data" },
     });
+    mutate(`http://localhost:5000/infosAPI/filesInfos/${infoUuid}`);
     onClose();
   });
 

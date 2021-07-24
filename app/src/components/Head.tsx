@@ -12,6 +12,7 @@ import {
 } from "@chakra-ui/react";
 import axios from "axios";
 import { useState } from "react";
+import { mutate } from "swr";
 import { Place } from "../App";
 import { User } from "../interfaces";
 
@@ -30,6 +31,7 @@ const Head = ({ user, setUser }: Props) => {
         `http://localhost:5000/infosAPI/info/${user.uuid}`,
         { place, title: inpInfo }
       );
+      mutate(`http://localhost:5000/infosAPI/userInfos/${user.uuid}`);
       console.log(res.data.message);
     } catch (err) {
       throw err;
