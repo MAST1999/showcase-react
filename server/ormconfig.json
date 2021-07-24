@@ -6,7 +6,7 @@
   "password": "1234",
   "database": "checkout",
   "synchronize": false,
-  "logging": true,
+  "logging": false,
   "entities": ["public/entity/**/*.js"],
   "migrations": ["public/migrations/**/*.js"],
   "subscribers": ["public/subscriber/**/*.js"],

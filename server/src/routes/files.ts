@@ -12,7 +12,10 @@ const storage = multer.diskStorage({
   filename: (req, file, cb) => {
     cb(
       null,
-      file.fieldname + "-" + Date.now() + path.extname(file.originalname)
+      path.basename(file.originalname) +
+        "-" +
+        Date.now() +
+        path.extname(file.originalname)
     );
   },
 });
@@ -82,6 +85,7 @@ router.post("/file", upload.single("file"), async (req, res) => {
 });
 
 router.post("/files", upload.array("files"), async (req, res) => {
+  console.log(req);
   const { userUuid, infoUuid } = req.body;
 
   if (!req.files || !Array.isArray(req.files)) {
