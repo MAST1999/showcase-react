@@ -33,20 +33,20 @@ const UploadModal = ({ header, infoUuid, userUuid }: Props) => {
   const { register, handleSubmit } = useForm<FormValues>();
 
   const onSubmit = handleSubmit(async (data: { file_: File[] }) => {
-    const files = data.file_;
-    if (files.length > 1) {
-      try {
-        const res = await axios.post("http://localhost:5000/uploadAPI/files", {
-          files,
-          userUuid,
-          infoUuid,
-        });
+    const formData = new FormData();
 
-        console.log(res);
-      } catch (err) {
-        throw err;
-      }
+    for (const file of data.file_) {
+      formData.append("files", file);
     }
+    formData.append("userUuid", userUuid);
+    formData.append("infoUuid", infoUuid);
+    await axios({
+      url: "http://localhost:5000/uploadAPI/files",
+      method: "POST",
+      data: formData,
+      headers: { "Content-Type": "multipart/form-data" },
+    });
+    onClose();
   });
 
   const validateFiles = (value: FileList) => {
@@ -62,7 +62,13 @@ const UploadModal = ({ header, infoUuid, userUuid }: Props) => {
   };
 
   return (
-    <Box mr={2}>
+    <Box
+      mb={2}
+      mt={2}
+      p={2}
+      borderBottom="2px solid"
+      borderColor="whiteAlpha.300"
+    >
       <Button onClick={onOpen}>Upload</Button>
       <Modal isOpen={isOpen} onClose={onClose}>
         <ModalOverlay />

@@ -34,11 +34,6 @@ const Head = ({ user, setUser }: Props) => {
     } catch (err) {
       throw err;
     }
-    setUser({
-      username: "mast",
-      uuid: "3d650e35-a215-4d80-aacd-9d867ab3c4af",
-      email: "mast@gmail.com",
-    });
   };
 
   return (
@@ -53,12 +48,11 @@ const Head = ({ user, setUser }: Props) => {
             onChange={(evt) => setInpInfo(evt.target.value)}
             value={inpInfo}
           />
-          <Select variant="filled" p={0}>
+          <Select variant="filled" p={0} defaultValue={Place.Unknown}>
             <Box
               as="option"
               value={Place.Unknown}
               onClick={() => setPlace(Place.Unknown)}
-              selected
             >
               I don't know
             </Box>

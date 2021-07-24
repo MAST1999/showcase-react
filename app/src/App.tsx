@@ -25,7 +25,7 @@ export enum Place {
 const App = () => {
   const [user, setUser] = useState<User>({
     username: "mast",
-    uuid: "eecf73ad-71ec-46d5-93f7-2ff01feff5d2",
+    uuid: "8b3c7ffb-cd3d-4a7c-9d5f-db4664378f60",
     email: "mast@gmail.com",
   });
 

@@ -14,6 +14,7 @@ import {
   VStack,
 } from "@chakra-ui/react";
 import axios from "axios";
+import { useRef } from "react";
 import useSWR from "swr";
 import { FileData } from "../interfaces";
 
@@ -21,15 +22,22 @@ interface Props {
   infoUuid: string;
 }
 
+interface PropsEditable {
+  fileUuid: string;
+  inpRef: React.RefObject<HTMLInputElement>;
+}
+
 const FilesControl = ({ infoUuid }: Props) => {
+  const inpRef = useRef<HTMLInputElement>(null);
   const fetcher = (url: string): Promise<FileData[]> =>
     axios.get(url).then((res) => res.data);
   const { data, error } = useSWR<FileData[]>(
     `http://localhost:5000/infosAPI/filesInfos/${infoUuid}`,
-    fetcher
+    fetcher,
+    { refreshInterval: 1000 }
   );
 
-  const EditableControls = () => {
+  const EditableControls = ({ fileUuid, inpRef }: PropsEditable) => {
     const {
       isEditing,
       getSubmitButtonProps,
@@ -37,12 +45,25 @@ const FilesControl = ({ infoUuid }: Props) => {
       getEditButtonProps,
     } = useEditableControls();
 
+    const submitProps = getSubmitButtonProps();
+
+    console.log(submitProps.onClick);
     return isEditing ? (
       <ButtonGroup justifyContent="center" size="sm">
         <IconButton
           aria-label="Apply edit"
           icon={<CheckIcon />}
-          {...getSubmitButtonProps()}
+          ref={submitProps.ref}
+          onClick={async (e) => {
+            await axios.put(
+              `http://localhost:5000/uploadAPI/file/${fileUuid}`,
+              { description: inpRef.current?.value }
+            );
+
+            submitProps["onClick"]
+              ? submitProps["onClick"](e)
+              : console.log("what");
+          }}
         />
         <IconButton
           aria-label="Cancel edit"
@@ -69,12 +90,28 @@ const FilesControl = ({ infoUuid }: Props) => {
         <Spinner /> Loading...
       </Box>
     );
+  if (data) {
+    data.sort((file1, file2) => {
+      const date1 = new Date(file1.createdAt);
+      const date2 = new Date(file2.createdAt);
+
+      if (date1.getTime() < date2.getTime()) return -1;
+      if (date1.getTime() > date2.getTime()) return 1;
+      return 0;
+    });
+  }
   return (
     <VStack>
       {data.map((file) => {
         return (
-          <Flex key={file.uuid} flexDirection="column">
-            <Text>{file.filename}</Text>
+          <Flex
+            key={file.uuid + file.filename}
+            flexDirection="column"
+            borderBottom="2px solid"
+            borderColor="whiteAlpha.300"
+            mb={2}
+          >
+            <Text fontSize={24}>File Name: {file.filename}</Text>
             {file.description ? (
               <Editable
                 defaultValue={file.description}
@@ -86,7 +123,7 @@ const FilesControl = ({ infoUuid }: Props) => {
                   borderColor="whiteAlpha.400"
                   border="1px solid"
                 />
-                <EditableControls />
+                <EditableControls fileUuid={file.uuid} inpRef={inpRef} />
               </Editable>
             ) : (
               <Editable
@@ -94,12 +131,13 @@ const FilesControl = ({ infoUuid }: Props) => {
                 fontSize="2xl"
                 isPreviewFocusable={false}
               >
-                <EditablePreview w="368px" />
+                <EditablePreview />
                 <EditableInput
                   borderColor="whiteAlpha.400"
                   border="1px solid"
+                  ref={inpRef}
                 />
-                <EditableControls />
+                <EditableControls fileUuid={file.uuid} inpRef={inpRef} />
               </Editable>
             )}
             <Link href={file.link}>Download</Link>
