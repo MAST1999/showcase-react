@@ -24,6 +24,7 @@ export enum Place {
 }
 
 const App = () => {
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [user, setUser] = useState<User>({
     username: "mast",
     uuid: "e2df65bb-0979-4aea-94b7-d6cec895b2ae",

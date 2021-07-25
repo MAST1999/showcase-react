@@ -1,4 +1,4 @@
-import { CheckIcon, CloseIcon, EditIcon } from "@chakra-ui/icons";
+import { CheckIcon, CloseIcon, DeleteIcon, EditIcon } from "@chakra-ui/icons";
 import {
   Box,
   ButtonGroup,
@@ -121,6 +121,24 @@ const FilesControl = ({ infoUuid }: Props) => {
                 {file.filename}
               </Box>
             </Text>
+            <IconButton
+              ml={2}
+              aria-label="Search database"
+              icon={<DeleteIcon />}
+              onClick={async () => {
+                try {
+                  const res = await axios.delete(
+                    `http://localhost:5000/uploadAPI/file/${file.uuid}`
+                  );
+
+                  mutate(
+                    `http://localhost:5000/infosAPI/filesInfos/${infoUuid}`
+                  );
+                } catch (err) {
+                  console.log(err);
+                }
+              }}
+            />
             {file.description ? (
               <Editable
                 defaultValue={file.description}
