@@ -45,7 +45,6 @@ const Head = ({ user, data }: Props) => {
         false
       );
 
-      console.log(user.uuid);
       await axios.post(`http://localhost:5000/infosAPI/info/${user.uuid}`, {
         place,
         title: inpInfo,

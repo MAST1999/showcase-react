@@ -27,7 +27,7 @@ const App = () => {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [user, setUser] = useState<User>({
     username: "mast",
-    uuid: "e2df65bb-0979-4aea-94b7-d6cec895b2ae",
+    uuid: "e34508be-fc02-4000-8767-2aab6b3d9243",
     email: "mast@gmail.com",
   });
 

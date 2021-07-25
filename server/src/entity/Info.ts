@@ -24,7 +24,7 @@ export class Info extends Model {
   @IsString()
   list: Place;
 
-  @ManyToOne(() => User, (user) => user.infos)
+  @ManyToOne(() => User, (user) => user.infos, { onDelete: "CASCADE" })
   user: User;
 
   @OneToMany(() => File, (file) => file.info)

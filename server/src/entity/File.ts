@@ -19,9 +19,9 @@ export class File extends Model {
   @IsString()
   link: string;
 
-  @ManyToOne(() => User, (user) => user.files)
+  @ManyToOne(() => User, (user) => user.files, { onDelete: "CASCADE" })
   user: User;
 
-  @ManyToOne(() => Info, (info) => info.files)
+  @ManyToOne(() => Info, (info) => info.files, { onDelete: "CASCADE" })
   info: Info;
 }

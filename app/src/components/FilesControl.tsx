@@ -127,6 +127,7 @@ const FilesControl = ({ infoUuid }: Props) => {
               icon={<DeleteIcon />}
               onClick={async () => {
                 try {
+                  // eslint-disable-next-line @typescript-eslint/no-unused-vars
                   const res = await axios.delete(
                     `http://localhost:5000/uploadAPI/file/${file.uuid}`
                   );

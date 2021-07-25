@@ -33,6 +33,7 @@ const Main = ({ infos, userUuid }: Props) => {
               border="1px solid"
               borderColor={listItemBorderColor}
               p={2}
+              mr={2}
             >
               <Text
                 fontSize={32}
