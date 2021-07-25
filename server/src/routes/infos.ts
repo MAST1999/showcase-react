@@ -71,3 +71,24 @@ router.get("/filesInfos/:uuid", async (req, res) => {
     return res.send(500).json(errObj);
   }
 });
+
+// DELETE
+router.delete("/info/:uuid", async (req, res) => {
+  const uuid = req.params.uuid;
+
+  try {
+    const info = await Info.findOne({ uuid });
+
+    await info?.remove();
+
+    return res.sendStatus(204);
+  } catch (err) {
+    const errObj = {
+      err,
+      place: `/info/${uuid}`,
+      method: "DELETE",
+    };
+    console.log(errObj);
+    return res.send(500).json(errObj);
+  }
+});
