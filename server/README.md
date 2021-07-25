@@ -15,4 +15,4 @@ For starting the server first install all the packages using `yarn install` then
 
 ### Creating a User
 
-Currently this doesn't have a create a user page so you will need to send `username, email, password` to `http://localhost:5000/usersAPI/user` to have a user. The response will contain a `uuid` which we need in out front-end app. in the `App.tsx` you will find a `user` state which has a default `uuid`, you will need to paste the `uuid` received from the prior request in there and the app will run after wards.
+Currently this doesn't have a create a user page so you will need to send `username, email, password` to `http://localhost:5000/usersAPI/user` as a `post` request to have a user. The response will contain a `uuid` which we need in out front-end app. in the `App.tsx` you will find a `user` state which has a default `uuid`, you will need to paste the `uuid` received from the prior request in there and the app will run after wards.
