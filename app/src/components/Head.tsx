@@ -14,25 +14,44 @@ import axios from "axios";
 import { useState } from "react";
 import { mutate } from "swr";
 import { Place } from "../App";
-import { User } from "../interfaces";
+import { User, UserData } from "../interfaces";
 
 interface Props {
   user: User;
-  setUser: React.Dispatch<React.SetStateAction<User>>;
+  data: UserData;
 }
 
-const Head = ({ user, setUser }: Props) => {
+const Head = ({ user, data }: Props) => {
   const { colorMode, toggleColorMode } = useColorMode();
   const [inpInfo, setInpInfo] = useState("");
   const [place, setPlace] = useState(Place.Unknown);
   const addInfo = async (): Promise<void> => {
     try {
-      const res = await axios.post(
-        `http://localhost:5000/infosAPI/info/${user.uuid}`,
-        { place, title: inpInfo }
+      mutate(
+        `http://localhost:5000/infosAPI/userInfos/${user.uuid}`,
+        {
+          ...data,
+          infos: [
+            ...data.infos,
+            {
+              title: inpInfo,
+              list: place,
+              uuid: "daf4i32-432t24-3g35g35-35g34gfd2f",
+              createdAt: new Date().getTime(),
+              updatedAt: new Date().getTime(),
+            },
+          ],
+        },
+        false
       );
-      mutate(`http://localhost:5000/infosAPI/userInfos/${user.uuid}`);
-      console.log(res.data.message);
+
+      console.log(user.uuid);
+      await axios.post(`http://localhost:5000/infosAPI/info/${user.uuid}`, {
+        place,
+        title: inpInfo,
+      });
+
+      await mutate(`http://localhost:5000/infosAPI/userInfos/${user.uuid}`);
     } catch (err) {
       throw err;
     }

@@ -29,3 +29,8 @@ export interface FileData {
   filename: string;
   description: string;
 }
+
+export interface UserData {
+  infos: InfoAPI[];
+  files: FileData[];
+}

@@ -5,13 +5,14 @@ import {
   Grid,
   GridItem,
   Spinner,
+  Text,
 } from "@chakra-ui/react";
 import axios from "axios";
 import React, { useState } from "react";
 import useSWR from "swr";
 import Head from "./components/Head";
 import Main from "./components/Main";
-import { Info, User } from "./interfaces";
+import { User, UserData } from "./interfaces";
 
 export enum Place {
   Iran = "iran",
@@ -25,16 +26,24 @@ export enum Place {
 const App = () => {
   const [user, setUser] = useState<User>({
     username: "mast",
-    uuid: "8b3c7ffb-cd3d-4a7c-9d5f-db4664378f60",
+    uuid: "e2df65bb-0979-4aea-94b7-d6cec895b2ae",
     email: "mast@gmail.com",
   });
 
   const fetcher = (url: string) => axios.get(url).then((res) => res.data);
 
-  const { data, error } = useSWR<{ infos: Info[] }>(
+  const { data, error } = useSWR<UserData>(
     `http://localhost:5000/infosAPI/userInfos/${user.uuid}`,
     fetcher
   );
+
+  if (error) return <Text>Something went wrong</Text>;
+  if (!data)
+    return (
+      <Center>
+        Loading <Spinner />
+      </Center>
+    );
 
   return (
     <Grid
@@ -44,7 +53,7 @@ const App = () => {
       h="100%"
       gap={2}
     >
-      <Head user={user} setUser={setUser} />
+      <Head user={user} data={data} />
 
       {error ? (
         <Box>Something went wrong</Box>

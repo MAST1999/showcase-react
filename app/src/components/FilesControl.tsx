@@ -31,6 +31,7 @@ const FilesControl = ({ infoUuid }: Props) => {
   const inpRef = useRef<HTMLInputElement>(null);
   const fetcher = (url: string): Promise<FileData[]> =>
     axios.get(url).then((res) => res.data);
+
   const { data, error } = useSWR<FileData[]>(
     `http://localhost:5000/infosAPI/filesInfos/${infoUuid}`,
     fetcher
@@ -46,7 +47,6 @@ const FilesControl = ({ infoUuid }: Props) => {
 
     const submitProps = getSubmitButtonProps();
 
-    console.log(submitProps.onClick);
     return isEditing ? (
       <ButtonGroup justifyContent="center" size="sm">
         <IconButton
@@ -60,9 +60,7 @@ const FilesControl = ({ infoUuid }: Props) => {
             );
             mutate(`http://localhost:5000/infosAPI/filesInfos/${infoUuid}`);
 
-            submitProps["onClick"]
-              ? submitProps["onClick"](e)
-              : console.log("what");
+            submitProps["onClick"] && submitProps["onClick"](e);
           }}
         />
         <IconButton
