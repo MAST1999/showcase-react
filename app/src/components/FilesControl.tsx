@@ -1,25 +1,28 @@
 import { CheckIcon, CloseIcon, DeleteIcon, EditIcon } from "@chakra-ui/icons";
 import {
   Box,
+  Button,
   ButtonGroup,
   Editable,
   EditableInput,
   EditablePreview,
   Flex,
   IconButton,
-  Link,
   Spinner,
   Text,
+  useColorModeValue,
   useEditableControls,
   VStack,
 } from "@chakra-ui/react";
 import axios from "axios";
 import { useRef } from "react";
+import DownloadLink from "react-download-link";
 import useSWR, { mutate } from "swr";
 import { FileData } from "../interfaces";
 
 interface Props {
   infoUuid: string;
+  userUuid: string;
 }
 
 interface PropsEditable {
@@ -27,13 +30,15 @@ interface PropsEditable {
   inpRef: React.RefObject<HTMLInputElement>;
 }
 
-const FilesControl = ({ infoUuid }: Props) => {
+const FilesControl = ({ infoUuid, userUuid }: Props) => {
   const inpRef = useRef<HTMLInputElement>(null);
+  const filesBorderColor = useColorModeValue("teal.100", "whiteAlpha.600");
+
   const fetcher = (url: string): Promise<FileData[]> =>
     axios.get(url).then((res) => res.data);
 
   const { data, error } = useSWR<FileData[]>(
-    `http://localhost:5000/infosAPI/filesInfos/${infoUuid}`,
+    `http://localhost:5000/fileAPI/receive/${infoUuid}`,
     fetcher
   );
 
@@ -55,10 +60,10 @@ const FilesControl = ({ infoUuid }: Props) => {
           ref={submitProps.ref}
           onClick={async (e) => {
             await axios.put(
-              `http://localhost:5000/uploadAPI/file/${fileUuid}`,
+              `http://localhost:5000/fileAPI/file/${fileUuid}/${userUuid}/${infoUuid}`,
               { description: inpRef.current?.value }
             );
-            mutate(`http://localhost:5000/infosAPI/filesInfos/${infoUuid}`);
+            mutate(`http://localhost:5000/fileAPI/receive/${infoUuid}`);
 
             submitProps["onClick"] && submitProps["onClick"](e);
           }}
@@ -106,7 +111,7 @@ const FilesControl = ({ infoUuid }: Props) => {
             key={file.uuid + file.filename}
             flexDirection="column"
             borderBottom="2px solid"
-            borderColor="whiteAlpha.300"
+            borderColor={filesBorderColor}
             mb={2}
             w="450px"
           >
@@ -123,18 +128,15 @@ const FilesControl = ({ infoUuid }: Props) => {
             </Text>
             <IconButton
               ml={2}
-              aria-label="Search database"
+              aria-label="Delete file"
               icon={<DeleteIcon />}
               onClick={async () => {
                 try {
-                  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-                  const res = await axios.delete(
-                    `http://localhost:5000/uploadAPI/file/${file.uuid}`
+                  await axios.delete(
+                    `http://localhost:5000/fileAPI/file/${file.uuid}/${userUuid}/${infoUuid}`
                   );
 
-                  mutate(
-                    `http://localhost:5000/infosAPI/filesInfos/${infoUuid}`
-                  );
+                  mutate(`http://localhost:5000/fileAPI/receive/${infoUuid}`);
                 } catch (err) {
                   console.log(err);
                 }
@@ -168,7 +170,21 @@ const FilesControl = ({ infoUuid }: Props) => {
                 <EditableControls fileUuid={file.uuid} inpRef={inpRef} />
               </Editable>
             )}
-            <Link href={file.link}>Download</Link>
+            <Button as="div" width="fit-content" mt={3} mb={2} p={0}>
+              <DownloadLink
+                label="Download The File"
+                filename={file.filename}
+                exportFile={() => "data"}
+                style={{
+                  width: "100%",
+                  height: "100%",
+                  display: "flex",
+                  justifyContent: "center",
+                  alignItems: "center",
+                  padding: "0px 8px",
+                }}
+              />
+            </Button>
           </Flex>
         );
       })}

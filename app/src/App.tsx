@@ -7,12 +7,11 @@ import {
   Spinner,
   Text,
 } from "@chakra-ui/react";
-import axios from "axios";
-import React, { useState } from "react";
+import React from "react";
 import useSWR from "swr";
 import Head from "./components/Head";
 import Main from "./components/Main";
-import { User, UserData } from "./interfaces";
+import { User } from "./interfaces";
 
 export enum Place {
   Iran = "iran",
@@ -24,18 +23,8 @@ export enum Place {
 }
 
 const App = () => {
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const [user, setUser] = useState<User>({
-    username: "mast",
-    uuid: "e34508be-fc02-4000-8767-2aab6b3d9243",
-    email: "mast@gmail.com",
-  });
-
-  const fetcher = (url: string) => axios.get(url).then((res) => res.data);
-
-  const { data, error } = useSWR<UserData>(
-    `http://localhost:5000/infosAPI/userInfos/${user.uuid}`,
-    fetcher
+  const { data, error } = useSWR<User>(
+    "http://localhost:5000/userAPI/userDefault"
   );
 
   if (error) return <Text>Something went wrong</Text>;
@@ -54,12 +43,12 @@ const App = () => {
       h="100%"
       gap={2}
     >
-      <Head user={user} data={data} />
+      <Head user={data} data={data} />
 
       {error ? (
         <Box>Something went wrong</Box>
       ) : data ? (
-        <Main infos={data.infos} userUuid={user.uuid} />
+        <Main infos={data.infos} userUuid={data.uuid} />
       ) : (
         <Spinner />
       )}

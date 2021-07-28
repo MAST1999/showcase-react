@@ -1,8 +1,8 @@
-import { IsOptional, IsString } from "class-validator";
+import { IsString } from "class-validator";
 import { Column, Entity, ManyToOne, OneToMany } from "typeorm";
-import { File } from "./File.js";
-import Model from "./Model.js";
-import { User } from "./User.js";
+import { File } from "./File";
+import Model from "./Model";
+import { User } from "./User";
 
 export enum Place {
   Iran = "iran",
@@ -16,13 +16,12 @@ export enum Place {
 @Entity("infos")
 export class Info extends Model {
   @Column({ nullable: true })
-  @IsOptional()
   @IsString()
   title: string;
 
   @Column({ type: "enum", enum: Place, default: Place.Unknown })
   @IsString()
-  list: Place;
+  place: Place;
 
   @ManyToOne(() => User, (user) => user.infos, { onDelete: "CASCADE" })
   user: User;

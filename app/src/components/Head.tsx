@@ -26,31 +26,34 @@ const Head = ({ user, data }: Props) => {
   const [inpInfo, setInpInfo] = useState("");
   const [place, setPlace] = useState(Place.Unknown);
   const addInfo = async (): Promise<void> => {
+    setInpInfo("");
     try {
-      mutate(
-        `http://localhost:5000/infosAPI/userInfos/${user.uuid}`,
-        {
-          ...data,
-          infos: [
-            ...data.infos,
-            {
-              title: inpInfo,
-              list: place,
-              uuid: "daf4i32-432t24-3g35g35-35g34gfd2f",
-              createdAt: new Date().getTime(),
-              updatedAt: new Date().getTime(),
-            },
-          ],
-        },
-        false
-      );
+      // ! need to fix this as well
+      // mutate(
+      //   `http://localhost:5000/infosAPI/userInfos/${user.uuid}`,
+      //   {
+      //     ...data,
+      //     infos: [
+      //       ...data.infos,
+      //       {
+      //         title: inpInfo,
+      //         list: place,
+      //         uuid: "daf4i32-432t24-3g35g35-35g34gfd2f",
+      //         createdAt: new Date().getTime(),
+      //         updatedAt: new Date().getTime(),
+      //       },
+      //     ],
+      //   },
+      //   false
+      // );
 
-      await axios.post(`http://localhost:5000/infosAPI/info/${user.uuid}`, {
+      await axios.post(`http://localhost:5000/infoAPI/info/${user.uuid}`, {
         place,
         title: inpInfo,
       });
 
-      await mutate(`http://localhost:5000/infosAPI/userInfos/${user.uuid}`);
+      // TODO This will need to change to use user uuid
+      await mutate("http://localhost:5000/userAPI/userDefault");
     } catch (err) {
       throw err;
     }

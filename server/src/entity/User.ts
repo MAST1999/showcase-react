@@ -1,9 +1,9 @@
 import { Exclude } from "class-transformer";
 import { IsEmail, IsString, Length } from "class-validator";
 import { Column, Entity, OneToMany } from "typeorm";
-import { File } from "./File.js";
-import { Info } from "./Info.js";
-import Model from "./Model.js";
+import { File } from "./File";
+import { Info } from "./Info";
+import Model from "./Model";
 
 @Entity("users")
 export class User extends Model {

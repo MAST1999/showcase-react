@@ -42,12 +42,12 @@ const UploadModal = ({ header, infoUuid, userUuid }: Props) => {
     formData.append("userUuid", userUuid);
     formData.append("infoUuid", infoUuid);
     await axios({
-      url: "http://localhost:5000/uploadAPI/files",
+      url: "http://localhost:5000/fileAPI/files",
       method: "POST",
       data: formData,
       headers: { "Content-Type": "multipart/form-data" },
     });
-    mutate(`http://localhost:5000/infosAPI/filesInfos/${infoUuid}`);
+    mutate(`http://localhost:5000/fileAPI/receive/${infoUuid}`);
     onClose();
   });
 
@@ -70,6 +70,7 @@ const UploadModal = ({ header, infoUuid, userUuid }: Props) => {
       p={2}
       borderBottom="2px solid"
       borderColor="whiteAlpha.300"
+      width="100%"
     >
       <Button onClick={onOpen}>Upload</Button>
       <Modal isOpen={isOpen} onClose={onClose}>

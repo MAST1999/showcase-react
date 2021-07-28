@@ -4,13 +4,8 @@ export interface User {
   username: string;
   uuid: string;
   email: string;
-}
-
-export interface Info {
-  title: string;
-  dateRecord: string;
-  list: Place;
-  uuid: string;
+  infos: InfoAPI[];
+  files: FileData[];
 }
 
 export interface InfoAPI {
@@ -18,7 +13,7 @@ export interface InfoAPI {
   createdAt: string;
   updatedAt: string;
   title: string;
-  list: Place;
+  place: Place;
 }
 
 export interface FileData {

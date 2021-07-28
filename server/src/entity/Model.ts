@@ -1,20 +1,14 @@
-import { classToPlain, Exclude } from "class-transformer";
+import { classToPlain } from "class-transformer";
 import {
-  BaseEntity,
   BeforeInsert,
-  Column,
   CreateDateColumn,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from "typeorm";
 import { v4 as uuid } from "uuid";
 
-export default abstract class Model extends BaseEntity {
-  @Exclude({ toPlainOnly: true })
-  @PrimaryGeneratedColumn()
-  id: number;
-
-  @Column({ type: "uuid" })
+export default abstract class Model {
+  @PrimaryGeneratedColumn("uuid")
   uuid: string;
 
   @CreateDateColumn()
@@ -29,8 +23,6 @@ export default abstract class Model extends BaseEntity {
   }
 
   constructor(model?: Partial<any>) {
-    super();
-
     Object.assign(this, model);
   }
 

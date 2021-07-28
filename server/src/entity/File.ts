@@ -1,8 +1,8 @@
 import { IsOptional, IsString } from "class-validator";
 import { Column, Entity, ManyToOne } from "typeorm";
-import { Info } from "./Info.js";
-import Model from "./Model.js";
-import { User } from "./User.js";
+import { Info } from "./Info";
+import Model from "./Model";
+import { User } from "./User";
 
 @Entity("files")
 export class File extends Model {
@@ -19,9 +19,17 @@ export class File extends Model {
   @IsString()
   link: string;
 
-  @ManyToOne(() => User, (user) => user.files, { onDelete: "CASCADE" })
+  @ManyToOne(() => User, (user) => user.files, {
+    onDelete: "CASCADE",
+    primary: true,
+    cascade: true,
+  })
   user: User;
 
-  @ManyToOne(() => Info, (info) => info.files, { onDelete: "CASCADE" })
+  @ManyToOne(() => Info, (info) => info.files, {
+    onDelete: "CASCADE",
+    primary: true,
+    cascade: true,
+  })
   info: Info;
 }
