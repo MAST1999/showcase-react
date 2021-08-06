@@ -19,7 +19,7 @@ export class Info extends Model {
   @IsString()
   title: string;
 
-  @Column({ type: "enum", enum: Place, default: Place.Unknown })
+  @Column({ default: "unknown" })
   @IsString()
   place: Place;
 
