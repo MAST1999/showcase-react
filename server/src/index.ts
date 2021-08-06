@@ -10,7 +10,57 @@ import { Route } from "./interface";
 import { UserRepository } from "./repository/UserRepository";
 import { Routes } from "./routes";
 
-createConnection()
+// connection for in file settings
+// {
+//   type: "mssql",
+//   host: "localhost",
+//   database: "showcase",
+//   name: "connect1",
+//   extra: {
+//     driver: "msnodesqlv8",
+//     options: {
+//       trustedConnection: true
+//     }
+//   },
+//   synchronize: false,
+//   logging: false,
+//   entities: ["src/entity/**/*.ts"],
+//   migrations: ["src/migration/**/*.ts"],
+//   subscribers: ["src/subscriber/**/*.ts"],
+//   cli: {
+//     "entitiesDir": "src/entity",
+//     "migrationsDir": "src/migration",
+//     "subscribersDir": "src/subscriber"
+//   },
+//   options: {
+//     useUTC: true
+//   }
+// }
+
+createConnection(
+  {
+    type: "mssql",
+    host: "localhost",
+    database: "showcase",
+    username: "sa",
+    password: "1234",
+    port: 1435,
+    extra: {
+      validateConnection: false,
+      trustServerCertificate: true,
+    },
+    synchronize: false,
+    logging: false,
+    entities: ["src/entity/**/*.ts"],
+    migrations: ["src/migration/**/*.ts"],
+    subscribers: ["src/subscriber/**/*.ts"],
+    cli: {
+      "entitiesDir": "src/entity",
+      "migrationsDir": "src/migration",
+      "subscribersDir": "src/subscriber"
+    }
+  }
+)
   .then(async (connection) => {
     // create express app
     const app = express();
@@ -27,9 +77,9 @@ createConnection()
         cb(
           null,
           path.basename(file.originalname, path.extname(file.originalname)) +
-            "-" +
-            Date.now() +
-            path.extname(file.originalname)
+          "-" +
+          Date.now() +
+          path.extname(file.originalname)
         );
       },
     });
@@ -79,8 +129,9 @@ createConnection()
     app.listen(5000);
 
     // insert new users for test
+
     const userRepository = getCustomRepository(UserRepository);
-    const user = userRepository.findOne({ username: "mast" });
+    const user = await userRepository.findOne({ username: "mast" });
 
     if (!user) {
       const user = new User();
@@ -97,5 +148,7 @@ createConnection()
     console.log(
       "Express server has started on port 5000. Open http://localhost:5000/users to see results"
     );
+
+
   })
   .catch((error) => console.log(error));

@@ -1,10 +1,14 @@
 {
-  "type": "postgres",
+  "type": "mssql",
   "host": "localhost",
-  "port": 5432,
-  "username": "mast",
-  "password": "1234",
   "database": "showcase",
+  "username": "sa",
+  "password": "1234",
+  "port": 1435,
+  "extra": {
+    "validateConnection": false,
+    "trustServerCertificate": true
+  },
   "synchronize": false,
   "logging": false,
   "entities": ["src/entity/**/*.ts"],

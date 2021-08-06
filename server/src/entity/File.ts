@@ -27,7 +27,7 @@ export class File extends Model {
   user: User;
 
   @ManyToOne(() => Info, (info) => info.files, {
-    onDelete: "CASCADE",
+    onDelete: "NO ACTION",
     primary: true,
     cascade: true,
   })
