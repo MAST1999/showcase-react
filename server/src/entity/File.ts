@@ -19,17 +19,9 @@ export class File extends Model {
   @IsString()
   link: string;
 
-  @ManyToOne(() => User, (user) => user.files, {
-    onDelete: "CASCADE",
-    primary: true,
-    cascade: true,
-  })
+  @ManyToOne(() => User, (user) => user.files)
   user: User;
 
-  @ManyToOne(() => Info, (info) => info.files, {
-    onDelete: "NO ACTION",
-    primary: true,
-    cascade: true,
-  })
+  @ManyToOne(() => Info, (info) => info.files, { onDelete: "CASCADE" })
   info: Info;
 }
