@@ -1,17 +1,10 @@
-import { IsString } from "class-validator";
+import { IsDate, IsNumber, IsString } from "class-validator";
 import { Column, Entity, ManyToOne, OneToMany } from "typeorm";
+import { CheckboxSelection, Place } from "../../../shared/enums";
 import { File } from "./File";
 import Model from "./Model";
 import { User } from "./User";
 
-export enum Place {
-  Iran = "iran",
-  US = "us",
-  UK = "uk",
-  Canada = "canada",
-  Japan = "japan",
-  Unknown = "unknown",
-}
 
 @Entity("infos")
 export class Info extends Model {
@@ -22,6 +15,23 @@ export class Info extends Model {
   @Column({ default: "unknown" })
   @IsString()
   place: Place;
+
+  @Column({ default: 0, nullable: false })
+  @IsNumber()
+  checkboxes: CheckboxSelection;
+
+  @Column("text", { default: "", nullable: true })
+  descCheckboxOne: string;
+
+  @Column("text", { default: "", nullable: true })
+  descCheckboxTwo: string;
+
+  @Column("text", { default: "", nullable: true })
+  descCheckboxThree: string;
+
+  @Column({ default: "" })
+  @IsDate()
+  date: string;
 
   @ManyToOne(() => User, (user) => user.infos, { onDelete: "CASCADE" })
   user: User;
