@@ -24,4 +24,24 @@ export class InfoController {
 
     return this.infoRepository.createAndSave(title, place, userUuid);
   }
+
+  async checkbox(req: Request, res: Response, next: NextFunction) {
+    const {
+      checkboxes,
+      descCheckboxOne,
+      descCheckboxTwo,
+      descCheckboxThree,
+    } = req.body;
+    const infoUuid = req.params["uuid"];
+
+    if (!infoUuid) return { message: "The request was not valid" };
+
+    return this.infoRepository.updateCheckboxes(
+      infoUuid,
+      checkboxes,
+      descCheckboxOne,
+      descCheckboxTwo,
+      descCheckboxThree
+    );
+  }
 }

@@ -1,5 +1,6 @@
 import { DeleteIcon } from "@chakra-ui/icons";
 import {
+  Box,
   Flex,
   GridItem,
   IconButton,
@@ -10,6 +11,7 @@ import {
 import axios from "axios";
 import { mutate } from "swr";
 import { InfoAPI } from "../interfaces";
+import CheckBoxControl from "./CheckboxControl";
 import FilesControl from "./FilesControl";
 import UploadModal from "./UploadModal";
 
@@ -62,6 +64,18 @@ const Main = ({ infos, userUuid }: Props) => {
                     }}
                   />
                 </Text>
+                <Box>
+                  <Text>Checkboxes</Text>
+                  <CheckBoxControl
+                    checkboxContainer={{
+                      checkboxes: info.checkboxes,
+                      descCheckboxOne: info.descCheckboxOne,
+                      descCheckboxTwo: info.descCheckboxTwo,
+                      descCheckboxThree: info.descCheckboxThree,
+                    }}
+                    infoUuid={info.uuid}
+                  />
+                </Box>
 
                 <VStack>
                   <FilesControl infoUuid={info.uuid} userUuid={userUuid} />

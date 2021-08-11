@@ -59,6 +59,12 @@ export const Routes: Route[] = [
     controller: InfoController,
     action: "remove",
   },
+  {
+    method: Method.Put,
+    route: infoAPI + "/info/:uuid",
+    controller: InfoController,
+    action: "checkbox",
+  },
   // File Routes
   {
     method: Method.Post,
@@ -83,5 +89,17 @@ export const Routes: Route[] = [
     route: fileAPI + "/file/:uuid/:userUuid/:infoUuid",
     controller: FileController,
     action: "desc",
+  },
+  {
+    method: Method.Put,
+    route: fileAPI + "/file/checkbox/:uuid",
+    controller: FileController,
+    action: "checkboxes",
+  },
+  {
+    method: Method.Put,
+    route: fileAPI + "/file/number/:uuid",
+    controller: FileController,
+    action: "number",
   },
 ];

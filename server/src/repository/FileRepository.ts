@@ -120,4 +120,61 @@ export class FileRepository extends Repository<File> {
       }
     }
   }
+
+  async updateCheckbox(fileUuid: string, version: string, typeOfFile: string) {
+    try {
+      const file = await this.manager.findOne(File, { uuid: fileUuid });
+
+      if (!file) return { message: "File doesn't exist" };
+
+      file.version = +version;
+      file.type = +typeOfFile;
+
+      return this.manager.save(file);
+    } catch (err) {
+      if (isQueryFailedError(err)) {
+        return {
+          message: "Error in File Repo",
+          type: "Database",
+          func: "updateCheckbox",
+          err: err,
+        };
+      } else {
+        return {
+          message: "Error in File Repo",
+          type: "Other",
+          func: "updateCheckbox",
+          err: err,
+        };
+      }
+    }
+  }
+
+  async updateNumber(fileUuid: string, number: string) {
+    try {
+      const file = await this.manager.findOne(File, { uuid: fileUuid });
+
+      if (!file) return { message: "File doesn't exist" };
+
+      file.number = +number;
+
+      return this.manager.save(file);
+    } catch (err) {
+      if (isQueryFailedError(err)) {
+        return {
+          message: "Error in File Repo",
+          type: "Database",
+          func: "updateNumber",
+          err: err,
+        };
+      } else {
+        return {
+          message: "Error in File Repo",
+          type: "Other",
+          func: "updateNumber",
+          err: err,
+        };
+      }
+    }
+  }
 }

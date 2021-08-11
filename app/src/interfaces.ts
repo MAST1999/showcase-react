@@ -1,4 +1,5 @@
 import { Place } from "./App";
+import { CheckboxSelection, TypeOfFile, Version } from "./enums";
 
 export interface User {
   username: string;
@@ -14,6 +15,18 @@ export interface InfoAPI {
   updatedAt: string;
   title: string;
   place: Place;
+  checkboxes: CheckboxSelection;
+  descCheckboxOne: string;
+  descCheckboxTwo: string;
+  descCheckboxThree: string;
+  date: Date;
+}
+
+export interface CheckboxContainer {
+  checkboxes: CheckboxSelection;
+  descCheckboxOne: string;
+  descCheckboxTwo: string;
+  descCheckboxThree: string;
 }
 
 export interface FileData {
@@ -23,6 +36,10 @@ export interface FileData {
   updatedAt: string;
   filename: string;
   description: string;
+  number: number;
+  version: Version;
+  type: TypeOfFile;
+  date: Date;
 }
 
 export interface UserData {

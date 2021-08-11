@@ -90,4 +90,22 @@ export class FileController {
       return { message: "incomplete info" };
     }
   }
+
+  async checkboxes(req: Request, res: Response, next: NextFunction) {
+    const { version, typeOfFile } = req.body;
+    const fileUuid = req.params["uuid"];
+
+    if (!fileUuid) return { message: "invalid request" };
+
+    return this.fileRepository.updateCheckbox(fileUuid, version, typeOfFile);
+  }
+
+  async number(req: Request, res: Response, next: NextFunction) {
+    const { number } = req.body;
+    const fileUuid = req.params["uuid"];
+
+    if (!fileUuid) return { message: "invalid request" };
+
+    return this.fileRepository.updateNumber(fileUuid, number);
+  }
 }

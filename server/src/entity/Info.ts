@@ -5,7 +5,6 @@ import { File } from "./File";
 import Model from "./Model";
 import { User } from "./User";
 
-
 @Entity("infos")
 export class Info extends Model {
   @Column({ nullable: true })
@@ -16,7 +15,7 @@ export class Info extends Model {
   @IsString()
   place: Place;
 
-  @Column({ default: 0, nullable: false })
+  @Column({ type: "int", default: 0, nullable: false })
   @IsNumber()
   checkboxes: CheckboxSelection;
 

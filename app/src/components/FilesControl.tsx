@@ -7,7 +7,14 @@ import {
   EditableInput,
   EditablePreview,
   Flex,
+  HStack,
   IconButton,
+  NumberDecrementStepper,
+  NumberIncrementStepper,
+  NumberInput,
+  NumberInputField,
+  NumberInputStepper,
+  Select,
   Spinner,
   Text,
   useColorModeValue,
@@ -15,7 +22,7 @@ import {
   VStack,
 } from "@chakra-ui/react";
 import axios from "axios";
-import { useRef } from "react";
+import { useRef, useState } from "react";
 import DownloadLink from "react-download-link";
 import useSWR, { mutate } from "swr";
 import { FileData } from "../interfaces";
@@ -33,9 +40,15 @@ interface PropsEditable {
 const FilesControl = ({ infoUuid, userUuid }: Props) => {
   const inpRef = useRef<HTMLInputElement>(null);
   const filesBorderColor = useColorModeValue("teal.100", "whiteAlpha.600");
+  const [version, setVersion] = useState(0);
+  const [typeOfFile, setTypeOfFile] = useState(0);
+  const [number, setNumber] = useState(0);
 
-  const fetcher = (url: string): Promise<FileData[]> =>
-    axios.get(url).then((res) => res.data);
+  const fetcher = async (url: string): Promise<FileData[]> => {
+    const res = await axios.get(url);
+    console.log(res.data);
+    return res.data;
+  };
 
   const { data, error } = useSWR<FileData[]>(
     `http://localhost:5000/fileAPI/receive/${infoUuid}`,
@@ -103,6 +116,16 @@ const FilesControl = ({ infoUuid, userUuid }: Props) => {
       return 0;
     });
   }
+
+  const textVersions = ["NotSet", "One", "Two", "Three", "Four", "Five"];
+  const TextTypeOfFiles = [
+    "NotSet",
+    "NotImportant",
+    "Image",
+    "Document",
+    "Secret",
+  ];
+
   return (
     <VStack>
       {data.map((file) => {
@@ -126,8 +149,59 @@ const FilesControl = ({ infoUuid, userUuid }: Props) => {
                 {file.filename}
               </Box>
             </Text>
+            <HStack>
+              <Text>Version</Text>
+              <Select
+                mb={2}
+                defaultValue={file.version}
+                onChange={(e) => {
+                  setVersion(+e.target.value);
+                }}
+              >
+                {textVersions.map((ver, index) => (
+                  <option key={ver} value={index}>
+                    {ver}
+                  </option>
+                ))}
+              </Select>
+            </HStack>
+
+            <HStack>
+              <Text>Type of file</Text>
+              <Select
+                defaultValue={file.type}
+                mb={2}
+                onChange={(e) => setTypeOfFile(+e.target.value)}
+              >
+                {TextTypeOfFiles.map((type, index) => (
+                  <option key={type} value={index}>
+                    {type}
+                  </option>
+                ))}
+              </Select>
+            </HStack>
+
+            <Button
+              colorScheme="cyan"
+              mb={2}
+              mx={2}
+              onClick={async () => {
+                await axios.put(
+                  `http://localhost:5000/fileAPI/file/checkbox/${file.uuid}`,
+                  {
+                    version,
+                    typeOfFile,
+                  }
+                );
+
+                mutate(`http://localhost:5000/fileAPI/receive/${infoUuid}`);
+              }}
+            >
+              Update File
+            </Button>
+
             <IconButton
-              ml={2}
+              mx={2}
               aria-label="Delete file"
               icon={<DeleteIcon />}
               onClick={async () => {
@@ -170,6 +244,30 @@ const FilesControl = ({ infoUuid, userUuid }: Props) => {
                 <EditableControls fileUuid={file.uuid} inpRef={inpRef} />
               </Editable>
             )}
+            <Box>
+              <NumberInput defaultValue={file.number} min={0} mt={2}>
+                <NumberInputField
+                  onChange={(e) => setNumber(+e.target.value)}
+                />
+                <NumberInputStepper>
+                  <NumberIncrementStepper />
+                  <NumberDecrementStepper />
+                </NumberInputStepper>
+              </NumberInput>
+            </Box>
+            <Button
+              colorScheme="cyan"
+              onClick={async () => {
+                await axios.put(
+                  `http://localhost:5000/fileAPI/file/number/${file.uuid}`,
+                  { number }
+                );
+
+                mutate(`http://localhost:5000/fileAPI/receive/${infoUuid}`);
+              }}
+            >
+              Update Count
+            </Button>
             <Button as="div" width="fit-content" mt={3} mb={2} p={0}>
               <DownloadLink
                 label="Download The File"
